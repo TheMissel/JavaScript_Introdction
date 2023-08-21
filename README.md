@@ -1,2 +1,2 @@
 # JavaScript_Introdction
-this respository demonstres JavaScript learning progress
+this respository demonstrates JavaScript learning progress
