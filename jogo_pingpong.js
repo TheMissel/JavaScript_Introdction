@@ -20,16 +20,26 @@ let xRaqueteOponente = 585;
 let yRaqueteOponente = 150;
 let velocidadeYOponente;
 
+let colidiu = false
+
 //placarjogo
 let meusPontos = 0;
 let pontosOponente = 0;
 
+//somdojogo
+let raquetada;
+let ponto;
+let trilha;
 
-
-let colidiu = false
+function preload(){
+  trilha = loadSound("trilha.mp3");
+  ponto = loadSound("ponto.mp3");
+  raquetada = loadSound("raquetada.mp3");  
+}
 
 function setup() {
   createCanvas(xTela, yTela);
+  trilha.loop();
 }
 
 function draw() {
@@ -40,10 +50,9 @@ function draw() {
   mostraRaquete(xRaquete, yRaquete);
   mostraRaquete(xRaqueteOponente, yRaqueteOponente);
   movimentaMinhaRaquete();
-  //verificaColisaoRaquete();
+  movimentaRaqueteOponente();
   verificaColisaoRaquete(xRaquete, yRaquete);
   verificaColisaoRaquete(xRaqueteOponente, yRaqueteOponente);
-  movimentaRaqueteOponente();
   incluiPlacar();
   marcaPonto();
 }
@@ -71,7 +80,6 @@ function mostraRaquete(x, y){
   rect(x, y, raqueteComprimento, raqueteAltura); 
 }
 
-
 function movimentaMinhaRaquete(){
   if (keyIsDown(UP_ARROW)){
     yRaquete -= 10;
@@ -82,37 +90,52 @@ function movimentaMinhaRaquete(){
   yRaquete = constrain(yRaquete, 10, 295);
 }
 
-function verificaColisaoRaquete() {
-  if (xBolinha - raio < xRaquete + raqueteComprimento && yBolinha - raio < yRaquete + raqueteAltura && yBolinha + raio > yRaquete){
-     velocidadeXBolinha *= -1;
-    }
-}
-
 function verificaColisaoRaquete(x, y){
   colidiu =
   collideRectCircle(x, y, raqueteComprimento, raqueteAltura, xBolinha, yBolinha, raio);
   if (colidiu){
     velocidadeXBolinha *= -1;
+    raquetada.play();
   } 
 }
 
 function movimentaRaqueteOponente(){
-  velocidadeYOponente = yBolinha - yRaqueteOponente - raqueteComprimento / 2 - 30;
-  yRaqueteOponente += velocidadeYOponente;
+//modo versus maquina
+  //velocidadeYOponente = yBolinha - yRaqueteOponente - raqueteComprimento / 2 - 30;
+  //yRaqueteOponente += velocidadeYOponente;
+  //yRaqueteOponente = constrain(yRaqueteOponente, 10, 295);
+  
+//modo multplayer
+    if (keyIsDown(87)){
+    yRaqueteOponente -= 10;
+  }
+  if (keyIsDown(83)){
+    yRaqueteOponente += 10;
+  }
   yRaqueteOponente = constrain(yRaqueteOponente, 10, 295);
 }
 
 function incluiPlacar(){
-  fill(255)
-  text(meusPontos, 278, 26);
-  text(pontosOponente, 321, 26);
+  stroke(255);
+  textAlign(CENTER);
+  textSize(20); 
+  fill(color(255,140,0));
+  rect(150, 10, 40, 20);
+  fill(255);
+  text(meusPontos, 170, 26);
+  fill(color(255,140,0));
+  rect(450, 10, 40, 20);
+  fill(255);
+  text(pontosOponente, 470, 26);
 }
 
 function marcaPonto(){
   if (xBolinha > 590){
     meusPontos += 1;
+    ponto.play();
   }
   if (xBolinha < 10){
     pontosOponente += 1;
+    ponto.play();
   }
 }
